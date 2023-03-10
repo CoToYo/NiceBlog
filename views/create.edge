@@ -1,0 +1,46 @@
+@layout('layouts.app')
+
+@section('content')
+
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('/img/contact-bg.jpg')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="page-heading">
+                    <h1>New Post</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <form>
+                <div class="form-floating">
+                    <input type="text" placeholder="Title" name="title" class="form-control">
+                    <label>Title</label>
+                </div>
+
+                <div class="form-floating">
+                    <input type="text" placeholder="Description" name="description" class="form-control">
+                    <label>Description</label>
+                </div>
+
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="Content" name="content" style="height: 12rem" rows="10"></textarea>
+                    <label>Content</label>
+                </div>
+
+                <div class="my-4 text-center">
+                    <button class="btn btn-primary" id="" type="">CREATE POST</button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+@endsection
