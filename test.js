@@ -8,16 +8,23 @@ const Post = require('./database/models/Post')
 
 mongoose.connect('mongodb://localhost/test-blog')
 
-Post.find({
-    // title: 'My first blog post'
-    description: 'Blog post description.'
-}).then((error, post) => {
-    console.log(error, post)
-})
+async function fun() {
+    await Post.find({
+        // title: 'My first blog post'
+        description: 'Blog post description.'
+    }).then((post) => {
+        console.log(post)
+    })
+    
+    await Post.findById("6404dc8fa76b08be007a96c2").then((res) => {
+        console.log(res)
+    })
 
-Post.findById("6404dc8fa76b08be007a96c2").then((res) => {
-    console.log(res)
-})
+    console.log("hello!!")
+}
+
+fun()
+
 
 
 
