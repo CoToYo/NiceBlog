@@ -9,7 +9,16 @@ const PostSchema = new mongoose.Schema({
     
     description: String,
     
-    content: String
+    content: String,
+
+    username: String,
+
+    createdDate: {
+        type: Date,
+        
+        // default value
+        default: new Date()
+    }
 })
 
 // the model itself is what is going to communicate with the database
