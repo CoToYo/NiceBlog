@@ -1,22 +1,35 @@
+/**
+ * Import external modules or libaraies into Node.js application.
+ */
 const express = require('express')
 
-const { config, engine } = require('express-edge');
+const app = new express()
 
-// Configure Edge if need to
-// config({ cache: process.env.NODE_ENV === 'production' });
-const path = require('path')
+const { config, engine } = require('express-edge');
 
 const mongoose = require('mongoose')
 
 const bodyParser = require('body-parser')
 
-const Post = require('./database/models/Post')
+const fileUpload = require('express-fileupload')
 
-const app = new express()
+const createPostController = require('./controller/createPost')
+
+const homePageController = require('./controller/homePage')
+
+const storePostController = require('./controller/storePost')
+
+const getPostController = require('./controller/getPost')
+
+const aboutPageController = require('./controller/aboutPage')
 
 
 // connect to mongodb database 'nice-blog', if this database is not exists, it will automatically creates for us.
 mongoose.connect('mongodb://localhost/nice-blog')
+
+/**
+ * Apply Express middlewares
+ */
 
 // all additional resources (e.g. images, css, js) should be searched in '/public' directory
 app.use(express.static('public'))
@@ -34,51 +47,22 @@ app.use(bodyParser.json())
 // This parser accepts only UTF-8 encoding of the body
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.get('/', async (req, res) => {
+// express package that allow processing file uploading
+app.use(fileUpload())
 
-    const posts = await Post.find({})
+// require a existed custom middleware for "posts creation validation"
+const storePost = require('./middleware/storePost')
+app.use('/posts/store', storePost)
 
-    // when it's rendering the view 'index', we are gonna have an object of data which contains all of the posts on the database.
-    res.render('index', {
-        // pass the post as parameter into the rendered view
-        posts: posts
-    })
-})
 
-app.get('/about', (req, res) => {
-    res.render('about')
-})
+app.get('/', homePageController)
 
-app.get('/post/:id', async (req, res) => {
-    console.log(req.params)
+app.get('/about', aboutPageController)
 
-    const post = await Post.findById(req.params.id)
+app.get('/post/:id', getPostController)
 
-    res.render('post', {
-        // pass the post as parameter into the rendered view
-        post: post
-    })
-})
+app.get('/posts/new', createPostController)
 
-app.get('/contact', (req, res) => {
-    res.render('contact')
-})
+app.post('/posts/store', storePostController)
 
-app.get('/posts/new', (req, res) => {
-    res.render('create')
-})
-
-app.post('/posts/store', (req, res) => {
-    // req.body would return a parsed JSON data that processed by 'body-parser' package
-    
-    // storage data
-    Post.create(req.body).then((doc) =>{
-        res.redirect('/')
-    })
-    
-    console.log(req.body)
-})
-
-app.listen(4000, () =>{
-    console.log('App is listening port 4000 now.')
-})
+app.listen(4000, () =>{ console.log('App is listening port 4000 now.') })
