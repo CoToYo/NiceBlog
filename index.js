@@ -15,10 +15,11 @@ const expressSession = require("express-session")
 
 const connectMongo = require('connect-mongo')
 
+const connectFlash = require('connect-flash')
+
 const storePost = require('./middleware/storePost')
 
 const auth = require('./middleware/auth')
-
 
 
 const createPostController = require('./controllers/createPost')
@@ -81,6 +82,9 @@ app.use(expressSession({
         collection: 'sessions' // default name
     })
 }))
+
+// a middleware that provides a way to store and retrieve flash message(short-lived message), e.g. used for showing successful login message.
+app.use(connectFlash())
 
 
 app.get('/', homePageController)

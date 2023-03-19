@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema({
     username: {
         type: String,
 
-        required: true,
+        required: [true, 'Please provide your username.'],
 
         unique: true
     },
@@ -15,7 +15,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
 
         // mongoose will make sure email is not null before store it into database
-        required: true,
+        required: [true, 'Please provide your email.'],
 
         // mongoose will make sure there is no duplicate in the database
         unique: true
@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
 
-        required: true
+        required: [true, 'Please provide your password.']
     }
 })
 
