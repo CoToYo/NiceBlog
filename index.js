@@ -3,8 +3,6 @@
  */
 const express = require('express')
 
-const app = new express()
-
 const { config, engine } = require('express-edge');
 
 const mongoose = require('mongoose')
@@ -14,6 +12,14 @@ const bodyParser = require('body-parser')
 const fileUpload = require('express-fileupload')
 
 const expressSession = require("express-session")
+
+const connectMongo = require('connect-mongo')
+
+const storePost = require('./middleware/storePost')
+
+const auth = require('./middleware/auth')
+
+
 
 const createPostController = require('./controllers/createPost')
 
@@ -34,12 +40,14 @@ const loginController = require('./controllers/login')
 const loginUserController = require('./controllers/loginUser')
 
 
+
 // connect to mongodb database 'nice-blog', if this database is not exists, it will automatically creates for us.
 mongoose.connect('mongodb://localhost/nice-blog')
 
 /**
  * Apply Express middlewares
  */
+const app = new express()
 
 // all additional resources (e.g. images, css, js) should be searched in '/public' directory
 app.use(express.static('public'))
@@ -60,13 +68,18 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // express package that allow processing file uploading
 app.use(fileUpload())
 
-// require a existed custom middleware for "posts creation validation"
-const storePost = require('./middleware/storePost')
-app.use('/posts/store', storePost)
-
 // This middleware will create a session ID for user at server-side and also send an associated session ID (called cookie) to client-side
 app.use(expressSession({
-    secret: 'secret' // necessary: encrypted the cookies
+    // necessary: encrypted the cookies
+    secret: 'secret', 
+    
+    // use a specific store we have provided
+    // with this configuration, it won't create or connect to mongo database we have created and connected again
+    store: connectMongo.create({
+        // pass the connection instance
+        mongoUrl: 'mongodb://localhost/nice-blog',
+        collection: 'sessions' // default name
+    })
 }))
 
 
@@ -76,13 +89,15 @@ app.get('/about', aboutPageController)
 
 app.get('/post/:id', getPostController)
 
-app.get('/posts/new', createPostController)
+// 'auth' is the middleware that would be executed before controller being called.
+app.get('/posts/new', auth, createPostController)
 
 app.get('/auth/register', createUserController)
 
 app.get('/auth/login', loginController)
 
-app.post('/posts/store', storePostController)
+// 'storePost' & 'auth' are the middlewares that would be executed before controller being called.
+app.post('/posts/store',auth ,storePost, storePostController)
 
 app.post('/users/register', storeUserController)
 
