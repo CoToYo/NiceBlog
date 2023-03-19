@@ -13,15 +13,25 @@ const bodyParser = require('body-parser')
 
 const fileUpload = require('express-fileupload')
 
-const createPostController = require('./controller/createPost')
+const expressSession = require("express-session")
 
-const homePageController = require('./controller/homePage')
+const createPostController = require('./controllers/createPost')
 
-const storePostController = require('./controller/storePost')
+const homePageController = require('./controllers/homePage')
 
-const getPostController = require('./controller/getPost')
+const storePostController = require('./controllers/storePost')
 
-const aboutPageController = require('./controller/aboutPage')
+const getPostController = require('./controllers/getPost')
+
+const aboutPageController = require('./controllers/aboutPage')
+
+const createUserController = require('./controllers/createUser')
+
+const storeUserController = require('./controllers/storeUser')
+
+const loginController = require('./controllers/login')
+
+const loginUserController = require('./controllers/loginUser')
 
 
 // connect to mongodb database 'nice-blog', if this database is not exists, it will automatically creates for us.
@@ -54,6 +64,11 @@ app.use(fileUpload())
 const storePost = require('./middleware/storePost')
 app.use('/posts/store', storePost)
 
+// This middleware will create a session ID for user at server-side and also send an associated session ID (called cookie) to client-side
+app.use(expressSession({
+    secret: 'secret' // necessary: encrypted the cookies
+}))
+
 
 app.get('/', homePageController)
 
@@ -63,6 +78,14 @@ app.get('/post/:id', getPostController)
 
 app.get('/posts/new', createPostController)
 
+app.get('/auth/register', createUserController)
+
+app.get('/auth/login', loginController)
+
 app.post('/posts/store', storePostController)
+
+app.post('/users/register', storeUserController)
+
+app.post('/users/login', loginUserController)
 
 app.listen(4000, () =>{ console.log('App is listening port 4000 now.') })
