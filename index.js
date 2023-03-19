@@ -3,7 +3,9 @@
  */
 const express = require('express')
 
-const { config, engine } = require('express-edge');
+const { config, engine } = require('express-edge')
+
+const edge = require('edge.js')
 
 const mongoose = require('mongoose')
 
@@ -17,9 +19,13 @@ const connectMongo = require('connect-mongo')
 
 const connectFlash = require('connect-flash')
 
+const cloudinary = require('cloudinary')
+
 const storePost = require('./middleware/storePost')
 
 const auth = require('./middleware/auth')
+
+const redirectIfAuthenticated = require('./middleware/redirectIfAuthenticated')
 
 
 const createPostController = require('./controllers/createPost')
@@ -83,8 +89,30 @@ app.use(expressSession({
     })
 }))
 
+// '*' means on all requests, this middleware should be executed.
+app.use('*', (req, res, next) => {
+    // .global variable will be available for all redenring pages processes.
+    // key is set as 'auth', value is set as req.session.userId
+    
+    /**
+     * To DO: return a key-value pair (auth, req.ression.userId) to .edge file, so that UI could displayed condionally based on login status and implement logout module.
+     *
+     */
+
+    next()
+})
+
 // a middleware that provides a way to store and retrieve flash message(short-lived message), e.g. used for showing successful login message.
 app.use(connectFlash())
+
+// cloudinary
+cloudinary.config({
+    api_key: '345398277491559',
+
+    api_secret: 'AxFDDc8Fi8AgMCy8AMWiHUHLylE',
+
+    cloud_name: 'dpuigzwhs'
+})
 
 
 app.get('/', homePageController)
@@ -96,15 +124,23 @@ app.get('/post/:id', getPostController)
 // 'auth' is the middleware that would be executed before controller being called.
 app.get('/posts/new', auth, createPostController)
 
-app.get('/auth/register', createUserController)
+app.get('/auth/login', redirectIfAuthenticated, loginController)
 
-app.get('/auth/login', loginController)
+app.get('/auth/register', redirectIfAuthenticated, createUserController)
+
 
 // 'storePost' & 'auth' are the middlewares that would be executed before controller being called.
 app.post('/posts/store',auth ,storePost, storePostController)
 
-app.post('/users/register', storeUserController)
+app.post('/users/register', redirectIfAuthenticated, storeUserController)
 
-app.post('/users/login', loginUserController)
+app.post('/users/login', redirectIfAuthenticated, loginUserController)
 
-app.listen(4000, () =>{ console.log('App is listening port 4000 now.') })
+
+// if all routes above are not match with request from client
+app.use((req, res) => res.render('notfound'))
+
+
+const port = process.env.PORT || 4000
+
+app.listen(port, () =>{ console.log(`App is listening port ${port} now.`) })

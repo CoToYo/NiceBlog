@@ -6,7 +6,7 @@ module.exports = async(req, res) => {
     console.log(`post id: ${JSON.stringify(req.params)}`)
 
     try{
-        const post = await Post.findById(req.params.id)
+        const post = await Post.findById(req.params.id).populate('author')
 
         res.render('post', {
             // pass the post as parameter into the rendered view
