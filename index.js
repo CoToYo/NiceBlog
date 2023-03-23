@@ -46,6 +46,8 @@ const loginController = require('./controllers/login')
 
 const loginUserController = require('./controllers/loginUser')
 
+const logoutController = require('./controllers/logout')
+
 
 
 // connect to mongodb database 'nice-blog', if this database is not exists, it will automatically creates for us.
@@ -91,13 +93,12 @@ app.use(expressSession({
 
 // '*' means on all requests, this middleware should be executed.
 app.use('*', (req, res, next) => {
-    // .global variable will be available for all redenring pages processes.
-    // key is set as 'auth', value is set as req.session.userId
     
-    /**
-     * To DO: return a key-value pair (auth, req.ression.userId) to .edge file, so that UI could displayed condionally based on login status and implement logout module.
-     *
-     */
+    // edge.global('auth', req.session.userId) is not supported any more
+    // in general, the app.locals object in Express is used to store application-level variables 
+    // and values that are available to all templates and routes within an Express application.
+    // variable name: auth ; value : req.session.userId
+    app.locals.auth = req.session.userId
 
     next()
 })
@@ -127,6 +128,8 @@ app.get('/posts/new', auth, createPostController)
 app.get('/auth/login', redirectIfAuthenticated, loginController)
 
 app.get('/auth/register', redirectIfAuthenticated, createUserController)
+
+app.get('/auth/logout', logoutController)
 
 
 // 'storePost' & 'auth' are the middlewares that would be executed before controller being called.
