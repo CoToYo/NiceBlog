@@ -4,6 +4,9 @@ Implementation of a blog sharing application by using NodeJS, Express, and Mongo
 ### [👉Demo Video](https://youtu.be/9MQK54GPSJE)
 
 ### How to run the code:
+
+before run this app locally, please make sure you have downloaded MongoDB.
+
 1. clone the code to your local environment.
 2. go into "/NiceBlog" directory.
 3. open terminal and run ``npm install`` command.
