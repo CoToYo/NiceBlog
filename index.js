@@ -61,6 +61,9 @@ const app = new express()
 // all additional resources (e.g. images, css, js) should be searched in '/public' directory
 app.use(express.static('public'))
 
+// Configure Edge
+config({ cache: process.env.NODE_ENV === 'production' });
+
 // Automatically set view engine and adds dot notation to app.render
 app.use(engine);
 app.set('views', `${__dirname}/views`);
@@ -93,7 +96,7 @@ app.use(expressSession({
 
 // '*' means on all requests, this middleware should be executed.
 app.use('*', (req, res, next) => {
-    
+
     // edge.global('auth', req.session.userId) is not supported any more
     // in general, the app.locals object in Express is used to store application-level variables 
     // and values that are available to all templates and routes within an Express application.
