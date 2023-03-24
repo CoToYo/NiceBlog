@@ -50,14 +50,43 @@ const loginUserController = require('./controllers/loginUser')
 const logoutController = require('./controllers/logout')
 
 
-
 // connect to mongodb database 'nice-blog', if this database is not exists, it will automatically creates for us.
-mongoose.connect('mongodb://localhost/nice-blog')
+const db_uri = 'mongodb+srv://cty549868165:mongo87730168@cluster0.gswfabd.mongodb.net/?retryWrites=true&w=majority'
+// const db_uri = 'mongodb://localhost/nice-blog'
+async function connect() {
+    try{
+        await mongoose.connect(db_uri)
+        console.log("Connected to MongoDB")
+    } catch(error){
+        console.log(`ERROR CONEECTION: ${error}`)
+    }
+}
+
+connect()
 
 /**
  * Apply Express middlewares
  */
 const app = new express()
+
+// a middleware that provides a way to store and retrieve flash message(short-lived message), e.g. used for showing successful login message.
+app.use(connectFlash())
+
+// This middleware will create a session ID for user at server-side and also send an associated session ID (called cookie) to client-side
+app.use(expressSession({
+    // necessary: encrypted the cookies
+    secret: 'secret', 
+    // necessary, because the default value of 'resave' and 'saveUninitialized' has been deprecated
+    resave: true,
+    saveUninitialized: true,
+    // use a specific store we have provided
+    // with this configuration, it won't create or connect to mongo database we have created and connected again
+    store: connectMongo.create({
+        // pass the connection instance
+        mongoUrl: db_uri,
+        collection: 'sessions' // default name
+    })
+}))
 
 // all additional resources (e.g. images, css, js) should be searched in '/public' directory
 app.use(express.static('public'))
@@ -81,22 +110,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // express package that allow processing file uploading
 app.use(fileUpload())
 
-// This middleware will create a session ID for user at server-side and also send an associated session ID (called cookie) to client-side
-app.use(expressSession({
-    // necessary: encrypted the cookies
-    secret: 'secret', 
-    // necessary, because the default value of 'resave' and 'saveUninitialized' has been deprecated
-    resave: false,
-    saveUninitialized: false,
-    // use a specific store we have provided
-    // with this configuration, it won't create or connect to mongo database we have created and connected again
-    store: connectMongo.create({
-        // pass the connection instance
-        mongoUrl: 'mongodb://localhost/nice-blog',
-        collection: 'sessions' // default name
-    })
-}))
-
 // '*' means on all requests, this middleware should be executed.
 app.use('*', (req, res, next) => {
 
@@ -108,9 +121,6 @@ app.use('*', (req, res, next) => {
 
     next()
 })
-
-// a middleware that provides a way to store and retrieve flash message(short-lived message), e.g. used for showing successful login message.
-app.use(connectFlash())
 
 // cloudinary
 cloudinary.config({

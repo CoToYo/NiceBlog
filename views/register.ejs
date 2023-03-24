@@ -19,25 +19,25 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-8 offset-md-2">
-                    
-                    @if(errors.length > 0)
-                        <ul class="list-group">
-                            @each(err in errors)
-                                <li class="list-group-item text-danger">{{err}}</li>
-                            @endeach
+
+                    <% if(errors.length > 0){ %>
+                        <ul class="list-group"></ul>
+                        <% errors.forEach(err => { %>
+                            <li class="list-group-item text-danger"><%= err %></li>
+                        <% }) %>
                         </ul>
-                    @endif
+                    <% } %>
 
                     <!-- enctype="multipart/form-data" means we are gonna have multimedia file in this form, so it should be encrypt. -->
                     <form action="/users/register" method="POST" enctype="multipart/form-data">
 
                         <div class="form-floating">
-                            <input type="text" placeholder="Username" name="username" value="<%= data.username || '' %>" class="form-control">
+                            <input type="text" placeholder="Username" name="username" value="<% data.username || '' %>" class="form-control">
                             <label>Username</label>
                         </div>
 
                         <div class="form-floating">
-                            <input type="email" placeholder="Email" name="email" value="<%= data.email || '' %>" class="form-control">
+                            <input type="email" placeholder="Email" name="email" value="<% data.email || '' %>" class="form-control">
                             <label>Email</label>
                         </div>
 

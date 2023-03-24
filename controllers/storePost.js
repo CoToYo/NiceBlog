@@ -4,10 +4,10 @@ const path = require('path')
 
 const cloudinary = require('cloudinary')
 
+const fs = require('fs')
+
 module.exports = async (req, res) => {
     const { image } = req.files
-
-    console.log(image)
 
     const uploadPath = path.resolve(__dirname, '..', 'public/posts_img', image.name)
 
@@ -27,6 +27,8 @@ module.exports = async (req, res) => {
 
             })
             .then((post) => {
+                // remove saved image from local
+                fs.unlinkSync(uploadPath)
                 res.redirect('/')
             })
             .catch((error) => { 

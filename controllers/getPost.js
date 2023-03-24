@@ -1,6 +1,6 @@
 const Post = require("../database/models/Post")
 
-module.exports = async(req, res) => {
+module.exports = async (req, res) => {
     // pinrtout post id
     // console.log(`post id: ${req.params.id}`)
     console.log(`post id: ${JSON.stringify(req.params)}`)
