@@ -3,7 +3,8 @@
  */
 const express = require('express')
 
-const { config, engine } = require('express-edge')
+// const { config, engine } = require('express-edge')
+const ejs = require('ejs')
 
 const edge = require('edge.js')
 
@@ -62,11 +63,11 @@ const app = new express()
 app.use(express.static('public'))
 
 // Configure Edge
-config({ cache: process.env.NODE_ENV === 'production' });
+// config({ cache: process.env.NODE_ENV === 'production' });
 
 // Automatically set view engine and adds dot notation to app.render
-app.use(engine);
-app.set('views', `${__dirname}/views`);
+// app.set('view', `${__dirname}/views`);
+app.set('view engine', 'ejs')
 
 // Help us accept and parse JSON data from the client side(browser)
 app.use(bodyParser.json())
