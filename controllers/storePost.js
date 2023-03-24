@@ -9,6 +9,8 @@ const fs = require('fs')
 module.exports = async (req, res) => {
     const { image } = req.files
 
+    console.log(req.files)
+
     const uploadPath = path.resolve(__dirname, '..', 'public/posts_img', image.name)
 
     // image.mv(target_path), it moves image to tartget_path
