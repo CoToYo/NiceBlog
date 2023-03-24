@@ -85,7 +85,9 @@ app.use(fileUpload())
 app.use(expressSession({
     // necessary: encrypted the cookies
     secret: 'secret', 
-    
+    // necessary, because the default value of 'resave' and 'saveUninitialized' has been deprecated
+    resave: false,
+    saveUninitialized: false,
     // use a specific store we have provided
     // with this configuration, it won't create or connect to mongo database we have created and connected again
     store: connectMongo.create({
