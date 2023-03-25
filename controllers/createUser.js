@@ -1,10 +1,11 @@
 module.exports = (req, res) => {
-    console.log(`ERROR: ${req.session.registrationError}`)
+    console.log(`registrationError: ${req.session.registrationError}`)
+    
     res.render('register', {
-        // errors: req.session.registrationError
         
         errors: req.flash('registrationError'),
 
-        data: req.flash('data')[0] // it returns an array
+        // save last valid input from user
+        data: req.flash('data') // it returns an array
     })
 }

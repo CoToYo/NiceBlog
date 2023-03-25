@@ -4,39 +4,38 @@ const path = require('path')
 
 const cloudinary = require('cloudinary')
 
+const fs = require('fs')
+
 module.exports = async (req, res) => {
     const { image } = req.files
 
-    console.log(image)
+    console.log(req.files)
 
     const uploadPath = path.resolve(__dirname, '..', 'public/posts_img', image.name)
 
     // image.mv(target_path), it moves image to tartget_path
     await image.mv(uploadPath)
 
-    cloudinary.v2.uploader.upload(uploadPath)
-        .then((result) => {
-            // storage data
-            Post.create({
-                ...req.body,
-                
-                image: result.secure_url,
+    try{
+        const result = await cloudinary.v2.uploader.upload(uploadPath)
 
-                // bind the user with this post
-                author: req.session.userId
+        // storage data
+        await Post.create({
+            ...req.body,
+            
+            image: result.secure_url,
 
-            })
-            .then((post) => {
-                res.redirect('/')
-            })
-            .catch((error) => { 
-                console.log(error)
-                return res.redirect('/') 
-            })
-        })
-        .catch((error) => {
-            console.log(error)
-            return res.redirect('/')
+            // bind the user with this post
+            author: req.session.userId
+
         })
 
+        // fs.unlinkSync(uploadPath)
+        res.redirect('/')
+
+    } catch(error){
+        console.log(`ERROR: ${error}`)
+        return res.redirect('/')
+    }
+    
 }
