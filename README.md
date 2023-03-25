@@ -1,9 +1,10 @@
 # NiceBlog
 Implementation of a blog sharing application by using NodeJS, Express, and MongoDB
 
-### [👉Demo Video](https://youtu.be/9MQK54GPSJE)
+### [👉Try NiceBlog Demo!](https://nice-blog.onrender.com/)
+### [Demo Video](https://youtu.be/9MQK54GPSJE)
 
-### How to run the code:
+### Run in your local environment:
 
 before run this app locally, please make sure you have downloaded MongoDB.
 
