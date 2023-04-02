@@ -5,7 +5,6 @@ module.exports = (req, res) => {
     User.create(req.body)
         .then(() => res.redirect('/'))
         .catch((error) => {
-
             const registrationError = Object.keys(error.errors).map(key => error.errors[key].message)
 
             // console.log(`ERROR: ${registrationError}`)
@@ -14,8 +13,8 @@ module.exports = (req, res) => {
 
             // flash storage 'registrationError' value in session with a key also called 'registrationError'
             req.flash('registrationError', registrationError)
-
-            req.flash('data', req.body)
+            // 
+            req.flash('lastInput', req.body)
 
             return res.redirect('/auth/register')
         })
