@@ -27,17 +27,17 @@
                         <% }) %>
                         </ul>
                     <% } %>
-
                     <!-- enctype="multipart/form-data" means we are gonna have multimedia file in this form, so it should be encrypt. -->
                     <form action="/users/register" method="POST" enctype="multipart/form-data">
 
                         <div class="form-floating">
-                            <input type="text" placeholder="Username" name="username" value="<% data.username || '' %>" class="form-control">
+                            
+                            <input type="text" placeholder="Username" name="username" value="<%= lastInput.username || '' %>" class="form-control">
                             <label>Username</label>
                         </div>
 
                         <div class="form-floating">
-                            <input type="email" placeholder="Email" name="email" value="<% data.email || '' %>" class="form-control">
+                            <input type="email" placeholder="Email" name="email" value="<%= lastInput.email || '' %>" class="form-control">
                             <label>Email</label>
                         </div>
 

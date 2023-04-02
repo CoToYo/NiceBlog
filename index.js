@@ -149,7 +149,7 @@ app.get('/auth/logout', logoutController)
 
 
 // 'storePost' & 'auth' are the middlewares that would be executed before controller being called.
-app.post('/posts/store',auth ,storePost, storePostController)
+app.post('/posts/store',auth, storePostController)
 
 app.post('/users/register', redirectIfAuthenticated, storeUserController)
 
